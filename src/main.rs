@@ -16,6 +16,52 @@
 //! optional. This file can either be passed as a command line argument or
 //! created as `$HOME/.passivetotal.toml`.
 //!
+//! # Build
+//!
+//! To build `passivetotal-client` just clone the repository and build it with
+//! `cargo`
+//!
+//! ```ignore
+//! git clone https://github.com/alexandg/passivetotal-client
+//! cd passivetotal-client
+//! cargo build --release
+//! ```
+//!
+//! # Examples
+//!
+//! Assuming you have the compiled binary in your `$PATH`
+//!
+//! ## Simple Query
+//!
+//! ```ignore
+//! passivetotal-client pdns "passivetotal.org"
+//! ```
+//!
+//! ## Pretty printing results
+//!
+//! ```ignore
+//! passivetotal-client --pretty pdns "passivetotal.org"
+//! ```
+//!
+//! ## Writing a pretty printed response to a file
+//!
+//! ```ignore
+//! passivetotal-client --pretty -o <PATH TO FILE> pdns "passivetotal.org"
+//! ```
+//!
+//! For a full list of available options and subcommands run
+//!
+//! ```ignore
+//! passivetotal-client --help
+//! ```
+//!
+//! For more information about the options available for a specific subcommand
+//! run
+//!
+//! ```ignore
+//! passivetotal-client <COMMAND> --help
+//! ```
+//!
 //! # License
 //!
 //! `passivetotal-client` is licensed under the MIT License. See LICENSE.
