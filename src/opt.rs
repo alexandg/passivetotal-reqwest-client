@@ -33,8 +33,10 @@ pub enum Command {
     #[structopt(name = "pdns")]
     PassiveDns(PdnsCmd),
     /// Retrieve information about an SSL certificate
+    #[structopt(name = "ssl")]
     Ssl(SslCmd),
     /// Retrieve or search WHOIS data for a given query
+    #[structopt(name = "whois")]
     Whois(WhoisCmd),
 }
 
@@ -148,16 +150,19 @@ pub struct PdnsCmd {
 #[derive(StructOpt)]
 pub enum SslCmd {
     /// Retrieve an SSL certificate by SHA1 hash
+    #[structopt(name = "certificate")]
     Certificate {
         /// SHA1 hash of certificate
         query: String,
     },
     /// Retrieve the SSL certificate history of a given SHA1 or IP address
+    #[structopt(name = "history")]
     History {
         /// SHA1 or IP address to retrieve certificate history for
         query: String,
     },
     /// Retrieves SSL certificates for a given search
+    #[structopt(name = "search")]
     Search {
         /// The SSL certificate field to query
         field: Option<SslField>,
@@ -170,11 +175,13 @@ pub enum SslCmd {
 #[derive(StructOpt)]
 pub enum WhoisCmd {
     /// Retrieve the WHOIS data for given query
+    #[structopt(name = "data")]
     Data {
         /// Domain to query.
         query: String,
     },
     /// Search WHOIS data for a keyword
+    #[structopt(name = "search")]
     Search {
         /// The WHOIS field to query
         field: Option<WhoisField>,

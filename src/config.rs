@@ -10,14 +10,18 @@ use opt::Opt;
 use Result;
 
 #[derive(Debug, Deserialize)]
-pub struct Config {
-    pub passivetotal: PassiveTotalConfig,
+struct PassiveTotalConfig {
+    #[serde(rename = "passivetotal")]
+    inner: Config,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct PassiveTotalConfig {
+pub struct Config {
+    /// Passivetotal account username to use when accessing the API
     pub username: String,
+    /// Passivetotal api key to use when accessing the API
     pub apikey: String,
+    /// Timeout for all requests made by the client
     pub timeout: Option<u64>,
 }
 
@@ -43,5 +47,7 @@ fn load_config<P: AsRef<Path>>(config: P) -> Result<Config> {
         .and_then(|mut f| f.read_to_string(&mut s))
         .chain_err(|| "Failed to open config file.")?;
 
-    toml::from_str(&s).chain_err(|| "Unable to parse configuration file.")
+    toml::from_str(&s)
+        .map(|cfg: PassiveTotalConfig| cfg.inner)
+        .chain_err(|| "Unable to parse configuration file.")
 }

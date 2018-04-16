@@ -1,3 +1,74 @@
+//! Simple command line client using the [`passivetotal-reqwest`][1] crate to
+//! query the [`PassiveTotal`][2] v2 [API][3] via the `reqwest` rust crate.
+//!
+//! Access to the API is via the `PassiveTotal` struct. This requires a valid
+//! `PassiveTotal` username and api key. These can be provided via a
+//! configuration file. This is a toml file with the following format:
+//!
+//! ```
+//! [passivetotal]
+//! username = "USERNAME"
+//! apikey = "SECRET_API_KEY"
+//! timeout = <U64>
+//! ```
+//!
+//! The username and apikey fields are required, while the other fields are
+//! optional. This file can either be passed as a command line argument or
+//! created as `$HOME/.passivetotal.toml`.
+//!
+//! # Build
+//!
+//! To build `passivetotal-client` just clone the repository and build it with
+//! `cargo`
+//!
+//! ```ignore
+//! git clone https://github.com/alexandg/passivetotal-client
+//! cd passivetotal-client
+//! cargo build --release
+//! ```
+//!
+//! # Examples
+//!
+//! Assuming you have the compiled binary in your `$PATH`
+//!
+//! ## Simple Query
+//!
+//! ```ignore
+//! passivetotal-client pdns "passivetotal.org"
+//! ```
+//!
+//! ## Pretty printing results
+//!
+//! ```ignore
+//! passivetotal-client --pretty pdns "passivetotal.org"
+//! ```
+//!
+//! ## Writing a pretty printed response to a file
+//!
+//! ```ignore
+//! passivetotal-client --pretty -o <PATH TO FILE> pdns "passivetotal.org"
+//! ```
+//!
+//! For a full list of available options and subcommands run
+//!
+//! ```ignore
+//! passivetotal-client --help
+//! ```
+//!
+//! For more information about the options available for a specific subcommand
+//! run
+//!
+//! ```ignore
+//! passivetotal-client <COMMAND> --help
+//! ```
+//!
+//! # License
+//!
+//! `passivetotal-client` is licensed under the MIT License. See LICENSE.
+//!
+//! [1]: https://github.com/alexandg/passivetotal-reqwest
+//! [2]: https://www.passivetotal.org
+//! [3]: https://api.passivetotal.org/api/docs/
 #![recursion_limit = "1024"]
 #[macro_use]
 extern crate error_chain;
