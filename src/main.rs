@@ -105,15 +105,17 @@ mod errors {
 }
 
 mod config;
+mod opt;
 
-use config::{Command, Config, Opt};
+use config::{Config};
 use errors::*;
+use opt::{Command, Opt};
 
-fn handle_ssl_command(pt: &PassiveTotal, cmd: &config::SslCmd) -> Result<json::Value> {
+fn handle_ssl_command(pt: &PassiveTotal, cmd: &opt::SslCmd) -> Result<json::Value> {
     let result = match *cmd {
-        config::SslCmd::Certificate { ref query } => pt.ssl().certificate(query).send()?,
-        config::SslCmd::History { ref query } => pt.ssl().history(query).send()?,
-        config::SslCmd::Search {
+        opt::SslCmd::Certificate { ref query } => pt.ssl().certificate(query).send()?,
+        opt::SslCmd::History { ref query } => pt.ssl().history(query).send()?,
+        opt::SslCmd::Search {
             ref field,
             ref query,
         } => if let Some(f) = field.clone() {
@@ -128,15 +130,15 @@ fn handle_ssl_command(pt: &PassiveTotal, cmd: &config::SslCmd) -> Result<json::V
 
 fn handle_enrichment_command(
     pt: &PassiveTotal,
-    cmd: &config::EnrichmentCmd,
+    cmd: &opt::EnrichmentCmd,
 ) -> Result<json::Value> {
     let result = match *cmd {
-        config::EnrichmentCmd::Data { ref query } => pt.enrichment().data(query.clone()).send()?,
-        config::EnrichmentCmd::Malware { ref query } => {
+        opt::EnrichmentCmd::Data { ref query } => pt.enrichment().data(query.clone()).send()?,
+        opt::EnrichmentCmd::Malware { ref query } => {
             pt.enrichment().malware(query.clone()).send()?
         }
-        config::EnrichmentCmd::OsInt { ref query } => pt.enrichment().osint(query.clone()).send()?,
-        config::EnrichmentCmd::Subdomains { ref query } => {
+        opt::EnrichmentCmd::OsInt { ref query } => pt.enrichment().osint(query.clone()).send()?,
+        opt::EnrichmentCmd::Subdomains { ref query } => {
             pt.enrichment().subdomains(query.clone()).send()?
         }
     };
@@ -144,24 +146,24 @@ fn handle_enrichment_command(
     Ok(result)
 }
 
-fn handle_actions_command(pt: &PassiveTotal, cmd: &config::ActionCmd) -> Result<json::Value> {
+fn handle_actions_command(pt: &PassiveTotal, cmd: &opt::ActionCmd) -> Result<json::Value> {
     let result = match *cmd {
-        config::ActionCmd::Classification { ref query } => {
+        opt::ActionCmd::Classification { ref query } => {
             pt.actions().classification(&query).send()?
         }
-        config::ActionCmd::Compromised { ref query } => pt.actions().compromised(&query).send()?,
-        config::ActionCmd::DynamicDns { ref query } => pt.actions().dynamic_dns(&query).send()?,
-        config::ActionCmd::Monitor { ref query } => pt.actions().monitor(&query).send()?,
-        config::ActionCmd::Sinkhole { ref query } => pt.actions().sinkhole(&query).send()?,
-        config::ActionCmd::Tags { ref query } => pt.actions().tags(&query).send()?,
+        opt::ActionCmd::Compromised { ref query } => pt.actions().compromised(&query).send()?,
+        opt::ActionCmd::DynamicDns { ref query } => pt.actions().dynamic_dns(&query).send()?,
+        opt::ActionCmd::Monitor { ref query } => pt.actions().monitor(&query).send()?,
+        opt::ActionCmd::Sinkhole { ref query } => pt.actions().sinkhole(&query).send()?,
+        opt::ActionCmd::Tags { ref query } => pt.actions().tags(&query).send()?,
     };
 
     Ok(result)
 }
 
-fn handle_whois_command(pt: &PassiveTotal, cmd: &config::WhoisCmd) -> Result<json::Value> {
+fn handle_whois_command(pt: &PassiveTotal, cmd: &opt::WhoisCmd) -> Result<json::Value> {
     let result = match *cmd {
-        config::WhoisCmd::Search {
+        opt::WhoisCmd::Search {
             ref field,
             ref query,
         } => if let Some(f) = field.clone() {
@@ -169,23 +171,23 @@ fn handle_whois_command(pt: &PassiveTotal, cmd: &config::WhoisCmd) -> Result<jso
         } else {
             pt.whois().search_keyword(query).send()?
         },
-        config::WhoisCmd::Data { ref query } => pt.whois().information(query).send()?,
+        opt::WhoisCmd::Data { ref query } => pt.whois().information(query).send()?,
     };
 
     Ok(result)
 }
 
-fn handle_account_command(pt: &PassiveTotal, cmd: &config::AccountCmd) -> Result<json::Value> {
+fn handle_account_command(pt: &PassiveTotal, cmd: &opt::AccountCmd) -> Result<json::Value> {
     let result = match *cmd {
-        config::AccountCmd::Info => pt.account().info().send()?,
-        config::AccountCmd::History => pt.account().history().send()?,
-        config::AccountCmd::Monitors => pt.account().monitors().send()?,
-        config::AccountCmd::Organization => pt.account().organization().send()?,
-        config::AccountCmd::Quotas => pt.account().quota().send()?,
-        config::AccountCmd::Sources { ref source } => {
+        opt::AccountCmd::Info => pt.account().info().send()?,
+        opt::AccountCmd::History => pt.account().history().send()?,
+        opt::AccountCmd::Monitors => pt.account().monitors().send()?,
+        opt::AccountCmd::Organization => pt.account().organization().send()?,
+        opt::AccountCmd::Quotas => pt.account().quota().send()?,
+        opt::AccountCmd::Sources { ref source } => {
             pt.account().sources().source(source.clone()).send()?
         }
-        config::AccountCmd::Teamstream => pt.account().organization().teamstream().send()?,
+        opt::AccountCmd::Teamstream => pt.account().organization().teamstream().send()?,
     };
 
     Ok(result)
