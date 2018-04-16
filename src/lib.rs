@@ -2,13 +2,13 @@
 #[macro_use]
 extern crate error_chain;
 extern crate passivetotal_reqwest as passivetotal;
+extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+extern crate serde_json as json;
 extern crate structopt;
 #[macro_use]
 extern crate structopt_derive;
-extern crate serde;
-extern crate serde_json as json;
 extern crate toml;
 
 use std::io::Write;
@@ -68,12 +68,12 @@ fn handle_enrichment_command(pt: &PassiveTotal, cmd: &opt::EnrichmentCmd) -> Res
 
 fn handle_actions_command(pt: &PassiveTotal, cmd: &opt::ActionCmd) -> Result<json::Value> {
     let result = match *cmd {
-        opt::ActionCmd::Classification { ref query } => pt.actions().classification(&query).send()?,
-        opt::ActionCmd::Compromised { ref query } => pt.actions().compromised(&query).send()?,
-        opt::ActionCmd::DynamicDns { ref query } => pt.actions().dynamic_dns(&query).send()?,
-        opt::ActionCmd::Monitor { ref query } => pt.actions().monitor(&query).send()?,
-        opt::ActionCmd::Sinkhole { ref query } => pt.actions().sinkhole(&query).send()?,
-        opt::ActionCmd::Tags { ref query } => pt.actions().tags(&query).send()?,
+        opt::ActionCmd::Classification { ref query } => pt.actions().classification(query).send()?,
+        opt::ActionCmd::Compromised { ref query } => pt.actions().compromised(query).send()?,
+        opt::ActionCmd::DynamicDns { ref query } => pt.actions().dynamic_dns(query).send()?,
+        opt::ActionCmd::Monitor { ref query } => pt.actions().monitor(query).send()?,
+        opt::ActionCmd::Sinkhole { ref query } => pt.actions().sinkhole(query).send()?,
+        opt::ActionCmd::Tags { ref query } => pt.actions().tags(query).send()?,
     };
 
     Ok(result)
@@ -115,11 +115,11 @@ fn print_response<W>(writer: W, resp: &json::Value, pretty_print: bool) -> Resul
 where
     W: Write,
 {
-    Ok(if pretty_print {
-        json::to_writer_pretty(writer, resp)?
+    if pretty_print {
+        json::to_writer_pretty(writer, resp).map_err(|err| err.into())
     } else {
-        json::to_writer(writer, resp)?
-    })
+        json::to_writer(writer, resp).map_err(|err| err.into())
+    }
 }
 
 pub fn print_errors(e: &errors::Error) {
@@ -146,11 +146,11 @@ pub fn run(pt: &PassiveTotal, args: &Opt) -> Result<()> {
         Command::Whois(ref cmd) => handle_whois_command(pt, cmd)?,
     };
 
-    Ok(match args.output {
+    match args.output {
         Some(ref path) => {
             let f = File::create(path)?;
-            print_response(f, &resp, args.pretty)?
+            print_response(f, &resp, args.pretty)
         }
-        _ => print_response(std::io::stdout(), &resp, args.pretty)?,
-    })
+        _ => print_response(std::io::stdout(), &resp, args.pretty),
+    }
 }

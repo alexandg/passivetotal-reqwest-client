@@ -2,7 +2,9 @@ use std::path::PathBuf;
 
 use passivetotal::{SslField, WhoisField};
 
+/// Simple CLI client for the passivetotal-reqwest crate
 #[derive(StructOpt)]
+#[structopt(name = "passivetotal")]
 pub struct Opt {
     #[structopt(short = "c", long = "config", parse(from_os_str))]
     pub config: Option<PathBuf>,
@@ -18,7 +20,7 @@ pub struct Opt {
 
 #[derive(StructOpt)]
 pub enum Command {
-    /// Retrieve settins and metadata about your account
+    /// Retrieve settings and metadata about your account
     #[structopt(name = "account")]
     Account(AccountCmd),
     /// Retrieve action status information for given query
