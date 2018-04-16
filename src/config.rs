@@ -1,4 +1,4 @@
-use std::io::{Read};
+use std::io::Read;
 use std::env;
 use std::fs::File;
 use std::path::{Path, PathBuf};
